@@ -41,8 +41,8 @@ async function getBlocoAleatorio(params) {
 
 }
 
-async function resultadoRolagemLog(nome, bloco, resultadoDado,attributes) {
-    console.log(`${nome} 🎲 rolou um dado de ${bloco} ${resultadoDado} 🎲`);
+async function resultadoRolagemLog(nome, bloco, resultadoDado,attribute) {
+    console.log(`${nome} 🎲 rolou um dado de ${bloco} ${resultadoDado} + ${attribute} = ${resultadoDado+attribute} 🎲`);
     
 }
 
@@ -53,72 +53,73 @@ async function engrenagemIniciarCorrida(personagem_1,personagem_2) {
         //sortear bloco
         let bloco = await getBlocoAleatorio();
         console.log(`Bloco sorteado: ${bloco}`);
+        
+        //rolar os dados
+        let resultadoDado1 = await rolarDado();
+        let resultadoDado2 = await rolarDado();
+    
+        //teste de habilidade
+        let TotalTesteHabilidade1 = 0; 
+        let TotalTesteHabilidade2 = 0;
+    
+        if (bloco === "RETA") {
+            TotalTesteHabilidade1 = personagem_1.velocidade + resultadoDado1;
+            TotalTesteHabilidade2 = personagem_2.velocidade + resultadoDado2;
+    
+            await resultadoRolagemLog(
+                personagem_1.nome,
+                "RETA",
+                resultadoDado1,
+                personagem_1.velocidade
+            );
+    
+            await resultadoRolagemLog(
+                personagem_2.nome,
+                "RETA",
+                resultadoDado2,
+                personagem_2.velocidade
+            );
+        }
+        if (bloco === "CURVA") {
+            TotalTesteHabilidade1 = personagem_1.manobrilidade + resultadoDado1;
+            TotalTesteHabilidade2 = personagem_2.manobrilidade + resultadoDado2;
+    
+            await resultadoRolagemLog(
+                personagem_1.nome,
+                "CURVA",
+                resultadoDado1,
+                personagem_1.manobrilidade
+            );
+    
+            await resultadoRolagemLog(
+                personagem_2.nome,
+                "CURVA",
+                resultadoDado2,
+                personagem_2.manobrilidade
+            );
+    
+        }
+        if (bloco === "CONFRONTO") {
+            let ResultadoPoder1 = personagem_1.poder + resultadoDado1;
+            let ResultadoPoder2 = personagem_2.poder + resultadoDado2;
+    
+            await resultadoRolagemLog(
+                personagem_1.nome,
+                "CONFRONTO",
+                resultadoDado1,
+                personagem_1.poder
+            );
+    
+            await resultadoRolagemLog(
+                personagem_2.nome,
+                "CONFRONTO",
+                resultadoDado2,
+                personagem_2.poder
+            );
+    
+        }
     }
     
-    //rolar os dados
-    let resultadoDado1 = await rolarDado();
-    let resultadoDado2 = await rolarDado();
-
-    //teste de habilidade
-    let TotalTesteHabilidade1 = 0; 
-    let TotalTesteHabilidade2 = 0;
-
-    if (bloco === "RETA") {
-        TotalTesteHabilidade1 = personagem_1.velocidade + resultadoDado1;
-        TotalTesteHabilidade2 = personagem_2.velocidade + resultadoDado2;
-
-        await resultadoRolagemLog(
-            personagem_1.nome,
-            "RETA",
-            resultadoDado1,
-            personagem_1.velocidade
-        );
-
-        await resultadoRolagemLog(
-            personagem_2.nome,
-            "RETA",
-            resultadoDado2,
-            personagem_2.velocidade
-        );
-    }
-    if (bloco === "CURVA") {
-        TotalTesteHabilidade1 = personagem_1.manobrilidade + resultadoDado1;
-        TotalTesteHabilidade2 = personagem_2.manobrilidade + resultadoDado2;
-
-        await resultadoRolagemLog(
-            personagem_1.nome,
-            "CURVA",
-            resultadoDado1,
-            personagem_1.manobrilidade
-        );
-
-        await resultadoRolagemLog(
-            personagem_2.nome,
-            "CURVA",
-            resultadoDado2,
-            personagem_2.manobrilidade
-        );
-
-    }
-    if (bloco === "CONFRONTO") {
-        let ResultadoPoder1 = personagem_1.poder + resultadoDado1;
-        let ResultadoPoder2 = personagem_2.poder + resultadoDado2;
-
-        await resultadoRolagemLog(
-            personagem_1.nome,
-            "CONFRONTO",
-            resultadoDado1,
-            personagem_1.poder
-        );
-
-        await resultadoRolagemLog(
-            personagem_2.nome,
-            "CONFRONTO",
-            resultadoDado2,
-            personagem_2.poder
-        );
-        
-    }
 }
 
 //função auto executável
