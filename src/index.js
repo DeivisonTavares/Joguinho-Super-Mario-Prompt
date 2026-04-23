@@ -1,76 +1,196 @@
-const personagem_1 = {
-    nome: "Mario",
-    velocidade: 4,
-    manobrilidade: 3,
-    poder: 3,
-    pontos: 0,
+const player1 = {
+  NOME: "Mario",
+  VELOCIDADE: 4,
+  MANOBRABILIDADE: 3,
+  PODER: 3,
+  PONTOS: 0,
 };
 
-const personagem_2 = {
-    nome: "Luigi",
-    velocidade: 3,
-    manobrilidade: 4,
-    poder: 4,
-    pontos: 0,
+const player2 = {
+  NOME: "Luigi",
+  VELOCIDADE: 3,
+  MANOBRABILIDADE: 4,
+  PODER: 4,
+  PONTOS: 0,
 };
 
-async function rolarDado() {
-    return Math.floor(Math.random() * 6) + 1;
+async function rollDice() {
+  return Math.floor(Math.random() * 6) + 1;
 }
 
-async function getBlocoAleatorio() {
-    let random = Math.random();
+async function getRandomBlock() {
+  let random = Math.random();
+  let result;
 
-    if (random < 0.33) return "RETA";
-    if (random < 0.66) return "CURVA";
-    return "CONFRONTO";
+  switch (true) {
+    case random < 0.33:
+      result = "RETA";
+      break;
+    case random < 0.66:
+      result = "CURVA";
+      break;
+    default:
+      result = "CONFRONTO";
+  }
+
+  return result;
 }
 
-async function resultadoRolagemLog(nome, bloco, resultadoDado, atributo) {
-    console.log(`${nome} 🎲 rolou um dado de ${bloco} ${resultadoDado} + ${atributo} = ${resultadoDado + atributo} 🎲`);
+async function logRollResult(characterName, block, diceResult, attribute) {
+  console.log(
+    `${characterName} 🎲 rolou um dado de ${block} ${diceResult} + ${attribute} = ${
+      diceResult + attribute
+    }`
+  );
 }
 
-async function engrenagemIniciarCorrida(personagem_1, personagem_2) {
-    for (let rodada = 1; rodada <= 5; rodada++) {
-        console.log(`🏁 Rodada ${rodada} 🏁`);
+async function playRaceEngine(character1, character2) {
+  for (let round = 1; round <= 5; round++) {
+    console.log(`🏁 Rodada ${round}`);
 
-        let bloco = await getBlocoAleatorio();
-        console.log(`Bloco sorteado: ${bloco}`);
+    let block = await getRandomBlock();
+    console.log(`Bloco: ${block}`);
 
-        let resultadoDado1 = await rolarDado();
-        let resultadoDado2 = await rolarDado();
+    let diceResult1 = await rollDice();
+    let diceResult2 = await rollDice();
 
-        let TotalTesteHabilidade1 = 0;
-        let TotalTesteHabilidade2 = 0;
+    let totalTestSkill1 = 0;
+    let totalTestSkill2 = 0;
 
-        if (bloco === "RETA") {
-            TotalTesteHabilidade1 = personagem_1.velocidade + resultadoDado1;
-            TotalTesteHabilidade2 = personagem_2.velocidade + resultadoDado2;
-        } else if (bloco === "CURVA") {
-            TotalTesteHabilidade1 = personagem_1.manobrilidade + resultadoDado1;
-            TotalTesteHabilidade2 = personagem_2.manobrilidade + resultadoDado2;
-        } else if (bloco === "CONFRONTO") {
-            TotalTesteHabilidade1 = personagem_1.poder + resultadoDado1;
-            TotalTesteHabilidade2 = personagem_2.poder + resultadoDado2;
-        }
+    if (block === "RETA") {
+      totalTestSkill1 = diceResult1 + character1.VELOCIDADE;
+      totalTestSkill2 = diceResult2 + character2.VELOCIDADE;
 
-        await resultadoRolagemLog(personagem_1.nome, bloco, resultadoDado1, TotalTesteHabilidade1);
-        await resultadoRolagemLog(personagem_2.nome, bloco, resultadoDado2, TotalTesteHabilidade2);
+      await logRollResult(
+        character1.NOME,
+        "velocidade",
+        diceResult1,
+        character1.VELOCIDADE
+      );
 
-        if (TotalTesteHabilidade1 > TotalTesteHabilidade2) {
-            console.log(`🏆 ${personagem_1.nome} marcou 1 ponto! 🏆`);
-            personagem_1.pontos++;
-        } else if (TotalTesteHabilidade2 > TotalTesteHabilidade1) {
-            console.log(`🏆 ${personagem_2.nome} marcou 1 ponto! 🏆`);
-            personagem_2.pontos++;
-        }
-
-        console.log("#############################################");
+      await logRollResult(
+        character2.NOME,
+        "velocidade",
+        diceResult2,
+        character2.VELOCIDADE
+      );
     }
+
+    if (block === "CURVA") {
+      totalTestSkill1 = diceResult1 + character1.MANOBRABILIDADE;
+      totalTestSkill2 = diceResult2 + character2.MANOBRABILIDADE;
+
+      await logRollResult(
+        character1.NOME,
+        "manobrabilidade",
+        diceResult1,
+        character1.MANOBRABILIDADE
+      );
+
+      await logRollResult(
+        character2.NOME,
+        "manobrabilidade",
+        diceResult2,
+        character2.MANOBRABILIDADE
+      );
+    }
+
+    if (block === "CONFRONTO") {
+      let powerResult1 = diceResult1 + character1.PODER;
+      let powerResult2 = diceResult2 + character2.PODER;
+
+      console.log(`${character1.NOME} confrontou com ${character2.NOME}! 🥊`);
+
+      await logRollResult(
+        character1.NOME,
+        "poder",
+        diceResult1,
+        character1.PODER
+      );
+
+      await logRollResult(
+        character2.NOME,
+        "poder",
+        diceResult2,
+        character2.PODER
+      );
+
+      if (powerResult1 > powerResult2) {
+        let isBomb = Math.random() < 0.5;
+        let damage = isBomb ? 2 : 1;
+        let itemNome = isBomb ? "uma BOMBA 💣" : "um CASCO 🐢";
+        
+        console.log(
+            `${character1.NOME} venceu o confronto e usou ${itemNome}!
+             ${character2.NOME} perdeu ${damage} ponto(s)`
+            );
+        
+        character2.PONTOS -= damage;
+        if (character2.PONTOS < 0) character2.PONTOS = 0;
+
+        if (Math.random() < 0.5) {
+            console.log(`${character1.NOME} ganhou um TURBO 🍄 e recebeu +1 ponto!`);
+            character1.PONTOS++;
+        }
+
+      } else if (powerResult2 > powerResult1) {
+        let isBomb = Math.random() < 0.5;
+        let damage = isBomb ? 2 : 1;
+        let itemNome = isBomb ? "uma BOMBA 💣" : "um CASCO 🐢";
+
+        console.log(
+            `${character2.NOME} venceu o confronto e usou ${itemNome}!
+             ${character1.NOME} perdeu ${damage} ponto(s)`
+            );
+        
+        character1.PONTOS -= damage;
+
+        if (character1.PONTOS < 0){
+            character1.PONTOS = 0;
+        }
+
+        if (Math.random() < 0.5) {
+            console.log(`${character2.NOME} ganhou um TURBO 🍄 e recebeu +1 ponto!`);
+            character2.PONTOS++;
+        }
+      } else {
+        console.log("Confronto empatado! Nenhum ponto foi perdido");
+      }
+    }
+
+    if (totalTestSkill1 > totalTestSkill2) {
+      console.log(`${character1.NOME} marcou um ponto!`);
+      character1.PONTOS++;
+
+    } else if (totalTestSkill2 > totalTestSkill1) {
+      console.log(`${character2.NOME} marcou um ponto!`);
+      character2.PONTOS++;
+
+    }
+
+    console.log("-----------------------------");
+  }
 }
 
-// 🔥 Agora a main está fora e só é chamada uma vez
+async function declareWinner(character1, character2) {
+  console.log("Resultado final:");
+  console.log(`${character1.NOME}: ${character1.PONTOS} ponto(s)`);
+  console.log(`${character2.NOME}: ${character2.PONTOS} ponto(s)`);
+
+  if (character1.PONTOS > character2.PONTOS){
+    console.log(`\n${character1.NOME} venceu a corrida! Parabéns! 🏆`);
+  } else if (character2.PONTOS > character1.PONTOS) {
+    console.log(`\n${character2.NOME} venceu a corrida! Parabéns! 🏆`);
+  } else {
+    console.log("A corrida terminou em empate");
+  }
+}
+
 (async function main() {
-    console.log(`🏁🚨 Corrida entre ${personagem_1.nome} e ${personagem_2.nome} está começando...\n`);
-    await engrenagemIniciarCorrida(personagem_1, personagem_2);
+  console.log(
+    `🏁🚨 Corrida entre ${player1.NOME} e ${player2.NOME} começando...\n`
+  );
+
+  await playRaceEngine(player1, player2);
+  await declareWinner(player1, player2);
 })();
